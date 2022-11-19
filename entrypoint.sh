@@ -43,6 +43,8 @@ if [[ $? != 0 ]]; then
     echo "Check delta files failed."
 elif [[ $result ]]; then
     tasks=( $(git diff --name-status origin/main origin/${PR_BRANCH} |grep -v zettablock_data_mart|grep -v macros|grep -v trino|grep 'sql$'|grep -v '^D'|cut  -f2 |cut -d'/' -f2-) )
+    echo '*********************************************************'
+    git diff --name-status origin/main origin/update_dbt_dry_run |grep -v zettablock_data_mart|grep -v macros|grep -v trino|grep 'sql$'|grep -v '^D'|cut  -f2 |cut -d'/' -f2-
     echo '---------------------------------------------------------'
     echo $tasks
     echo ${PR_BRANCH}
