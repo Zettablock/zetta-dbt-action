@@ -45,6 +45,8 @@ elif [[ $result ]]; then
     tasks=( $(git diff --name-status origin/main origin/${PR_BRANCH} |grep -v zettablock_data_mart|grep -v macros|grep -v trino|grep 'sql$'|grep -v '^D'|cut  -f2 |cut -d'/' -f2-) )
     echo '---------------------------------------------------------'
     echo $tasks
+    echo ${PR_BRANCH}
+    echo "dbt build --target dev --profiles-dir ./dryrun_profile --project-dir ./zettablock --select $tasks --vars '{\"external_s3_location\":\"s3://my-897033522173-us-east-1-spark/demo/$(openssl rand -hex 8)\"}'" 
     echo '---------------------------------------------------------'
     echo "dbt build --target dev --profiles-dir ./dryrun_profile --project-dir ./zettablock --select $tasks --vars '{\"external_s3_location\":\"s3://my-897033522173-us-east-1-spark/demo/$(openssl rand -hex 8)\"}'" |bash
     if [ $? -ne 0 ]
