@@ -43,6 +43,7 @@ if [[ $? != 0 ]]; then
     echo "Check delta files failed."
 elif [[ $result ]]; then
     tasks=( $(git diff --name-status origin/main origin/${PR_BRANCH} |grep -v zettablock_data_mart|grep -v macros|grep -v trino|grep 'sql$'|grep -v '^D'|cut  -f2 |cut -d'/' -f2-) )
+    echo $tasks
     echo "dbt build --target dev --profiles-dir ./dryrun_profile --project-dir ./zettablock --select $tasks --vars '{\"external_s3_location\":\"s3://my-897033522173-us-east-1-spark/demo/$(openssl rand -hex 8)\"}'" |bash
     if [ $? -ne 0 ]
         then
@@ -58,7 +59,8 @@ if [[ $? != 0 ]]; then
     echo "Check trino delta files failed."
 elif [[ $trino_result ]]; then
     tasks=( $(git diff --name-status origin/main origin/${PR_BRANCH} |grep -v zettablock_data_mart|grep -v macros|grep trino|grep 'sql$'|grep -v '^D'|cut  -f2 |cut -d'/' -f2-) )
-    echo "dbt run --target dev --profiles-dir ./trino_profile --project-dir ./zettablock --select $tasks --vars '{\"external_s3_location\":\"s3://my-897033522173-us-east-1-spark/demo/$(openssl rand -hex 8)\", \"TRINO_USER\":\"'\"$TRINO_USER\"'\", \"TRINO_PASSWORD\":\"'\"$TRINO_PASSWORD\"'\", \"TRINO_HOST\":\"'\"$TRINO_HOST\"'\"}'"| bash
+    echo $tasks
+    echo "dbt build --target dev --profiles-dir ./trino_profile --project-dir ./zettablock --select $tasks --vars '{\"external_s3_location\":\"s3://my-897033522173-us-east-1-spark/demo/$(openssl rand -hex 8)\", \"TRINO_USER\":\"'\"$TRINO_USER\"'\", \"TRINO_PASSWORD\":\"'\"$TRINO_PASSWORD\"'\", \"TRINO_HOST\":\"'\"$TRINO_HOST\"'\"}'"| bash
     if [ $? -ne 0 ]
         then
             echo "exception."
