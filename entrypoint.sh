@@ -40,7 +40,7 @@ echo "saving console output in \"${DBT_ACTION_LOG_PATH}\""
 # final_state=0
 result=$(git diff --name-status origin/main origin/${PR_BRANCH} |grep -v zettablock_data_mart|grep -v macros|grep -v trino|grep 'sql$'|grep -v '^D'|cut  -f2 |cut -d'/' -f2-)
 
-dbt build --target dev --profiles-dir ./dryrun_profile --project-dir ./zettablock --select models/cryptocom_data/aave/ethereum/aave_v2_ethereum_account_positions.sql models/cryptocom_data/aave/ethereum/aave_v2_ethereum_atoken_positions.sql models/cryptocom_data/aave/ethereum/aave_v2_ethereum_atoken_transfers.sql models/cryptocom_data/aave/ethereum/aave_v2_ethereum_debt_token_positions.sql models/cryptocom_data/aave/ethereum/aave_v2_ethereum_tokens.sql models/cryptocom_data/ethereum/ethereum_stablecoin_transfer.sql models/cryptocom_data/explore/explore_top_aave_profit_takers_12_months.sql models/cryptocom_data/explore/explore_top_stablecoin_flows.sql models/cryptocom_data/explore/explore_uniswap_v3_ethereum_trades.sql models/cryptocom_data/explore/explore_uniswap_v3_pool_volumes.sql models/cryptocom_data/explore/explore_uniswap_v3_trader_profits_per_token.sql models/cryptocom_data/explore/explore_uniswap_v3_trader_profits_total.sql models/cryptocom_data/uniswap/ethereum/uniswap_v3_ethereum_account_positions.sql models/cryptocom_data/uniswap/ethereum/uniswap_v3_ethereum_pool_liquidity.sql --vars '{"external_s3_location":"s3://my-897033522173-us-east-1-spark/demo/b46b2d72c96061a8/"}'
+# dbt build --target dev --profiles-dir ./dryrun_profile --project-dir ./zettablock --select models/cryptocom_data/aave/ethereum/aave_v2_ethereum_account_positions.sql models/cryptocom_data/aave/ethereum/aave_v2_ethereum_atoken_positions.sql models/cryptocom_data/aave/ethereum/aave_v2_ethereum_atoken_transfers.sql models/cryptocom_data/aave/ethereum/aave_v2_ethereum_debt_token_positions.sql models/cryptocom_data/aave/ethereum/aave_v2_ethereum_tokens.sql models/cryptocom_data/ethereum/ethereum_stablecoin_transfer.sql models/cryptocom_data/explore/explore_top_aave_profit_takers_12_months.sql models/cryptocom_data/explore/explore_top_stablecoin_flows.sql models/cryptocom_data/explore/explore_uniswap_v3_ethereum_trades.sql models/cryptocom_data/explore/explore_uniswap_v3_pool_volumes.sql models/cryptocom_data/explore/explore_uniswap_v3_trader_profits_per_token.sql models/cryptocom_data/explore/explore_uniswap_v3_trader_profits_total.sql models/cryptocom_data/uniswap/ethereum/uniswap_v3_ethereum_account_positions.sql models/cryptocom_data/uniswap/ethereum/uniswap_v3_ethereum_pool_liquidity.sql --vars '{"external_s3_location":"s3://my-897033522173-us-east-1-spark/demo/b46b2d72c96061a8/"}'
 
 if [[ $? != 0 ]]; then
     echo "Check delta files failed."
@@ -51,9 +51,9 @@ elif [[ $result ]]; then
     echo '---------------------------------------------------------'
     echo "${tasks[@]}"
     echo ${PR_BRANCH}
-    echo "dbt build --target dev --profiles-dir ./dryrun_profile --project-dir ./zettablock --select ${tasks[@]} --vars '{\"external_s3_location\":\"s3://my-897033522173-us-east-1-spark/demo/$(openssl rand -hex 8)\"}'" 
+    echo "dbt build --target dev --profiles-dir ./dryrun_profile --project-dir ./zettablock --select ${tasks[@]} --vars '{\"external_s3_location\":\"s3://my-897033522173-us-east-1-spark/demo/$(openssl rand -hex 8)/\"}'" 
     echo '---------------------------------------------------------'
-    echo "dbt build --target dev --profiles-dir ./dryrun_profile --project-dir ./zettablock --select $tasks --vars '{\"external_s3_location\":\"s3://my-897033522173-us-east-1-spark/demo/$(openssl rand -hex 8)\"}'" |bash
+    echo "dbt build --target dev --profiles-dir ./dryrun_profile --project-dir ./zettablock --select ${tasks[@]} --vars '{\"external_s3_location\":\"s3://my-897033522173-us-east-1-spark/demo/$(openssl rand -hex 8)/\"}'" |bash
     if [ $? -ne 0 ]
         then
             echo "exception."
