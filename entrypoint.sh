@@ -45,12 +45,13 @@ result=$(git diff --name-status origin/main origin/${PR_BRANCH} |grep -v zettabl
 if [[ $? != 0 ]]; then
     echo "Check delta files failed."
 elif [[ $result ]]; then
+    DBT_VARS="{\"external_s3_location\":\"s3://my-897033522173-us-east-1-spark/demo/$(openssl rand -hex 8)/\", \"data_creation_date\":\"$DATA_CREATION_DATE\", \"data_creation_date_begin\":\"$DATA_CREATION_DATE_BEGIN\", \"data_creation_date_end\":\"$DATA_CREATION_DATE_END\"}"
     tasks=( $(git diff --name-status origin/main origin/${PR_BRANCH} |grep -v zettablock_data_mart|grep -v macros|grep -v trino|grep 'sql$'|grep -v '^D'|cut  -f2 |cut -d'/' -f2-) )
     echo '---------------------------------------------------------'
     echo "${tasks[@]}"
-    echo "dbt build --target dev --profiles-dir ./dryrun_profile --project-dir ./zettablock --select ${tasks[@]} --vars '{\"external_s3_location\":\"s3://my-897033522173-us-east-1-spark/demo/$(openssl rand -hex 8)/\"}'" 
+    echo "dbt build --target dev --profiles-dir ./dryrun_profile --project-dir ./zettablock --select ${tasks[@]} --vars '$DBT_VARS'"
     echo '---------------------------------------------------------'
-    echo "dbt build --target dev --profiles-dir ./dryrun_profile --project-dir ./zettablock --select ${tasks[@]} --vars '{\"external_s3_location\":\"s3://my-897033522173-us-east-1-spark/demo/$(openssl rand -hex 8)/\"}'" |bash
+    echo "dbt build --target dev --profiles-dir ./dryrun_profile --project-dir ./zettablock --select ${tasks[@]} --vars '$DBT_VARS'" |bash
     if [ $? -ne 0 ]
         then
             echo "exception."
